@@ -28,9 +28,9 @@ const App = () => {
     return (
         <div>
             <Header text="Give Feedback" />
-            <Button onClick={() => setGood(good + 1)} text="good" />
-            <Button onClick={() => setNeutral(neutral + 1)} text="neutral" />
-            <Button onClick={() => setBad(bad + 1)} text="bad" />
+            <Button onClick={() => setGood(good + 1)} text="Good" />
+            <Button onClick={() => setNeutral(neutral + 1)} text="Neutral" />
+            <Button onClick={() => setBad(bad + 1)} text="Bad" />
             <Header text="Statistics" />
             {good || neutral || bad ? <Statistics good={good} neutral={neutral} bad={bad} /> : <p>No feedback given</p>}
         </div>
