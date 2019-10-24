@@ -13,7 +13,7 @@ const Button = ({ onClick, text }) => <button onClick={onClick}>{text}</button>
 const Header = ({ text }) => <h1>{text}</h1>
 
 const App = ({ anecdotes }) => {
-
+    
     const [selected, setSelected] = useState(0)
     const [vote, setVote] = useState(Array(anecdotes.length).fill(0))
     const math = () => setSelected(Math.floor((Math.random() * 6)))
@@ -23,10 +23,8 @@ const App = ({ anecdotes }) => {
         clone[selected] += 1
         setVote(clone)
     }
-    
     return (
         <div>
-            {console.log(mostVotes)}
             <Header text="Anecdote of the day" />
             <p>{anecdotes[selected]}<br />has {vote[selected]} votes</p>
             <Button onClick={votes} text="Vote" />
