@@ -12,16 +12,16 @@ const App = () => {
   const [phone, setPhone] = useState('')
   const [filter, setFilter] = useState('')
   const [notificationM, setNotificationM] = useState(null)
-  const [type, setType] = useState(true)
+  const [type, setType] = useState(false)
 
   const yoinkNimi = e => setNewName(e.target.value)
   const yoinkNumero = e => setPhone(e.target.value)
   const filterMeme = e => setFilter(e.target.value)
 
   const message = (message, type) => {
-    setNotificationM(message)
     setType(type)
-    setTimeout(() => { setNotificationM(null) }, 5000)
+    setNotificationM(message)
+    setTimeout(() => setNotificationM(null), 5000)
   }
 
   const lisaaHenkilo = e => {
@@ -40,7 +40,7 @@ const App = () => {
           setPhone('')
           message(`${person.name} added`, true)
         })
-        .catch(message(`Adding of ${person.name} failed`, false))
+        .catch(error => message(error.response.data.error, false))
     }
   }
 
@@ -49,11 +49,11 @@ const App = () => {
     if (window.confirm(`do you want to purge ${individual.name} from the list?`))
       noteService
         .purge(id)
-        .then(m => {
+        .then(() => {
           setPersons(persons.filter(person => person.id !== id))
           message(`Person ${individual.name} purged`, true)
         })
-        .catch(e => {
+        .catch(() => {
           message(`Information of ${individual.name} was already been purged from server`, false)
           setPersons(persons.filter(n => n.id !== id))
         })
