@@ -7,7 +7,10 @@
     "start": "cross-env NODE_ENV=production node index.js",
     "watch": "cross-env NODE_ENV=development nodemon index.js",
     "lint": "eslint .",
-    "test": "cross-env NODE_ENV=test jest --verbose --runInBand"
+    "test": "cross-env NODE_ENV=test jest --verbose --runInBand",
+    "test1": "npm t -- tests/list_helper.test.js",
+    "test2": "npm t -- tests/blog_api.test.js"
+
   },
   "keywords": [],
   "author": "Miro Laamanen",
