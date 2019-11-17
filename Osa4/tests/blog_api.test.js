@@ -8,20 +8,24 @@ const User = require('../models/user')
 
 
 describe('when there is initially some blogs saved', () => {
+
     beforeEach(async () => {
         await Blog.deleteMany({})
         await Blog.insertMany(helper.initialBlogs)
     })
+
     test('blogs are returned as json', async () => {
         await api
             .get('/api/blogs')
             .expect(200)
             .expect('Content-Type', /application\/json/)
     })
+
     test('all blogs are returned', async () => {
         const response = await api.get('/api/blogs')
         expect(response.body.length).toBe(helper.initialBlogs.length)
     })
+
     test('blog id instead of _id', async () => {
         const response = await api.get('/api/blogs')
         expect(response.body[0].id).toBeDefined()
@@ -35,6 +39,7 @@ describe('when there is initially some blogs saved', () => {
 })
 
 describe('viewing a specific blog', () => {
+
     test('succeeds with a valid id', async () => {
         const blogsAtStart = await helper.blogsInDb()
         const blogToView = blogsAtStart[0]
@@ -67,6 +72,7 @@ describe('addition of a new blog', () => {
         await Blog.deleteMany({})
         await Blog.insertMany(helper.initialBlogs)
     })
+
     test('a valid blog can be added ', async () => {
         const newBlog = {
             title: 'Hello',
@@ -75,7 +81,6 @@ describe('addition of a new blog', () => {
             likes: 9999,
             userId: '5dcfd529f7abcf0e64e2bfc4'
         }
-
         await api
             .post('/api/blogs')
             .send(newBlog)
@@ -94,7 +99,6 @@ describe('addition of a new blog', () => {
             author: 'Olleh',
             url: 'www.www.ww',
             userId: '5dcfd529f7abcf0e64e2bfc4'
-            
         }
         await api
             .post('/api/blogs')
@@ -143,10 +147,12 @@ describe('addition of a new blog', () => {
 })
 
 describe('deletion of a blog', () => {
+
     beforeEach(async () => {
         await Blog.deleteMany({})
         await Blog.insertMany(helper.initialBlogs)
     })
+
     test('succeeds with status code 204 if id is valid', async () => {
         const blogsAtStart = await helper.blogsInDb()
         const blogToDelete = blogsAtStart[0]
@@ -154,18 +160,19 @@ describe('deletion of a blog', () => {
             .delete(`/api/blogs/${blogToDelete.id}`)
             .expect(204)
         const blogsAtEnd = await helper.blogsInDb()
-        expect(blogsAtEnd.length).toBe(
-            helper.initialBlogs.length - 1
-        )
+        expect(blogsAtEnd.length).toBe(helper.initialBlogs.length - 1)
         const title = blogsAtEnd.map(r => r.title)
-        expect(title).not.toContain(blogToDelete.title)
+        expect(title).not.toContainEqual(blogToDelete.title)
     })
 })
+
 describe('editing of a blog', () => {
+
     beforeEach(async () => {
         await Blog.deleteMany({})
         await Blog.insertMany(helper.initialBlogs)
     })
+
     test('succeeds with status code 200 if editing was successful', async () => {
         const blogS = await helper.blogsInDb()
         const origin = blogS[0]
@@ -180,6 +187,7 @@ describe('editing of a blog', () => {
 })
 
 describe('user testing', () => {
+
     beforeEach(async () => {
         await User.deleteMany({})
         const user = new User({ username: 'root', password: 'sekret' })
@@ -188,7 +196,6 @@ describe('user testing', () => {
 
     test('creation succeeds with a fresh username', async () => {
         const usersAtStart = await helper.usersInDb()
-
         const newUser = {
             username: 'mluukkai',
             name: 'Matti Luukkainen',
@@ -208,33 +215,29 @@ describe('user testing', () => {
 
     test('creation fails with proper statuscode and message if username already taken', async () => {
         const usersAtStart = await helper.usersInDb()
-
         const newUser = {
             username: 'root',
             name: 'Superuser',
             password: 'salainen',
         }
-
         const result = await api
             .post('/api/users')
             .send(newUser)
             .expect(400)
             .expect('Content-Type', /application\/json/)
 
-        expect(result.body.error).toContain('`username` to be unique')
-
+        expect(result.body.error).toContain('expected `username` to be unique.')
         const usersAtEnd = await helper.usersInDb()
         expect(usersAtEnd.length).toBe(usersAtStart.length)
     })
+
     test('creation fails if password is too short or undefined', async () => {
         const usersAtStart = await helper.usersInDb()
-
         const newUser = {
             username: 'root',
             name: 'Superuser',
             password: '',
         }
-
         const result = await api
             .post('/api/users')
             .send(newUser)
@@ -242,19 +245,17 @@ describe('user testing', () => {
             .expect('Content-Type', /application\/json/)
 
         expect(result.body.error).toContain('password is too short or undefined')
-
         const usersAtEnd = await helper.usersInDb()
         expect(usersAtEnd.length).toBe(usersAtStart.length)
     })
+
     test('creation fails if username is too short', async () => {
         const usersAtStart = await helper.usersInDb()
-
         const newUser = {
             username: 'r',
             name: 'Superuser',
             password: 'salainen',
         }
-
         const result = await api
             .post('/api/users')
             .send(newUser)
@@ -262,7 +263,6 @@ describe('user testing', () => {
             .expect('Content-Type', /application\/json/)
 
         expect(result.body.error).toContain('username is too short')
-
         const usersAtEnd = await helper.usersInDb()
         expect(usersAtEnd.length).toBe(usersAtStart.length)
     })

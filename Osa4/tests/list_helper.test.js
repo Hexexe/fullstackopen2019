@@ -58,13 +58,31 @@ test('dummy returns one', () => {
 })
 
 describe('total likes', () => {
-    test('returns total sum of all the likes in blog array', () => {
+    test('empty list returns 0', () => {
+        const result = listHelper.totalLikes([])
+        expect(result).toBe(0)
+    })
+    test('when only one blog is in the list', () => {
+        const blog = 100
+        const result = listHelper.totalLikes([{ likes: blog }])
+        expect(result).toBe(blog)
+    })
+    test('returns total sum of all the likes in the list', () => {
         const result = listHelper.totalLikes(blogs)
         expect(result).toBe(36)
     })
 })
 
 describe('favorite blog', () => {
+    test('empty list returns undefined', () => {
+        const result = listHelper.favoriteBlog([])
+        expect(result).toEqual(undefined)
+    })
+    test('when only one blog is in the list', () => {
+        const blog = 100
+        const result = listHelper.totalLikes([{ likes: blog }])
+        expect(result).toBe(blog)
+    })
     test('returns the blog with most likes', () => {
         const result = listHelper.favoriteBlog(blogs)
         expect(result).toEqual(blogs[2])
@@ -72,6 +90,16 @@ describe('favorite blog', () => {
 })
 
 describe('most blogs', () => {
+    test('empty list returns undefined', () => {
+        const result = listHelper.mostBlogs([])
+        expect(result).toEqual(undefined)
+    })
+    test('when only one blog is in the list', () => {
+        const blog = [{title: 'React patterns', author: 'Michael Chan',url: 'https://reactpatterns.com/',likes: 7,}]
+        const auth = { author: 'Michael Chan', blogs: 1 }
+        const result = listHelper.mostBlogs(blog)
+        expect(result).toEqual(auth)
+    })
     test('returns the author who has written most blogs', () => {
         const result = listHelper.mostBlogs(blogs)
         const auth = { author: 'Robert C. Martin', blogs: 3 }
@@ -79,7 +107,17 @@ describe('most blogs', () => {
     })
 })
 describe('most likes', () => {
-    test('returns the author who has most likes', () => {
+    test('empty list returns undefined', () => {
+        const result = listHelper.mostLikes([])
+        expect(result).toEqual(undefined)
+    })
+    test('when only one blog is in the list', () => {
+        const blog = [{title: 'React patterns', author: 'Michael Chan',url: 'https://reactpatterns.com/',likes: 7,}]
+        const auth = { author: 'Michael Chan', likes: 7 }
+        const result = listHelper.mostLikes(blog)
+        expect(result).toEqual(auth)
+    })
+    test('returns the author who has the most likes', () => {
         const result = listHelper.mostLikes(blogs)
         const auth = { author: 'Edsger W. Dijkstra', likes: 17 }
         expect(result).toEqual(auth)
