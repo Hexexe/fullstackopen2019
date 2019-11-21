@@ -2,7 +2,6 @@ import React from 'react'
 import { render, fireEvent } from '@testing-library/react'
 import SimpleBlog from './SimpleBlog'
 
-
 test('renders content', () => {
   const blog = {
     title: 'Worst Blog EU',
