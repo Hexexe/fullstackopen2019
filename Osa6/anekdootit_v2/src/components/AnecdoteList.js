@@ -9,7 +9,6 @@ const AnecdoteList = props => {
 		props.vote(anecdote)
 		props.setNotification(`You voted ${anecdote.content}`, 5)
 	}
-
 	return (
 		<div>
 			{ane.map(anecdote => (
