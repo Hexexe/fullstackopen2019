@@ -1,22 +1,34 @@
 import React from 'react'
 import { vote } from '../reducers/anecdoteReducer'
+import { setNotification } from '../reducers/notificationReducer'
+import { connect } from 'react-redux'
 
 const AnecdoteList = props => {
-	const anecdotes = props.store.getState()
-	const addVote = id => props.store.dispatch(vote(id))
+	const ane = props.anecdotes
+	const voteA = anecdote => {
+		props.vote(anecdote)
+		props.setNotification(`You voted ${anecdote.content}`, 5)
+	}
+
 	return (
 		<div>
-			{anecdotes.map(anecdote => (
+			{ane.map(anecdote => (
 				<div key={anecdote.id}>
 					<div>{anecdote.content}</div>
 					<div>
 						has {anecdote.votes}
-						<button onClick={() => addVote(anecdote.id)}>vote</button>
+						<button onClick={() => voteA(anecdote)}>vote</button>
 					</div>
 				</div>
 			))}
 		</div>
 	)
 }
-
-export default AnecdoteList
+const mapStateToProps = state => {
+	return {
+		anecdotes: state.anecdotes
+	}
+}
+const mapDispatchToProps = { setNotification, vote }
+const ConnectedAnecdotes = connect(mapStateToProps, mapDispatchToProps)(AnecdoteList)
+export default ConnectedAnecdotes
