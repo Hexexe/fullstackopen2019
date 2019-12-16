@@ -2,36 +2,35 @@ const Blog = require('../models/blog')
 const User = require('../models/user')
 
 const initialBlogs = [
-	{
-		title: 'React patterns',
-		author: 'Michael Chan',
-		url: 'https://reactpatterns.com/',
-		likes: 7
-	},
-	{
-		title: 'Go To Statement Considered Harmful',
-		author: 'Edsger W. Dijkstra',
-		url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
-		likes: 5
-	}
+    {
+        title: 'meme',
+        author: 'Jukka Palmu',
+        url: 'www.google.fi',
+        likes: 0
+    },
+    {
+        title: 'emem',
+        author: 'Pukka Jalmu',
+        url: 'www.elgoog.if',
+        likes: 1000
+    }
 ]
 
+const nonExistingId = async () => {
+    const blog = new Blog({ title: 'lol', author: 'Pukka Jalmu', url: 'www.elgoog.if', likes: 1000 })
+    await blog.save()
+    await blog.remove()
+    return blog._id.toString()
+}
+
 const blogsInDb = async () => {
-	const blogs = await Blog.find({})
-	return blogs.map(b => b.toJSON())
+    const blogs = await Blog.find({})
+    return blogs.map(b => b.toJSON())
 }
 
 const usersInDb = async () => {
-	const users = await User.find({})
-	return users.map(u => u.toJSON())
+    const users = await User.find({})
+    return users.map(u => u.toJSON())
 }
 
-const equalTo = blog => b =>
-	b.author === blog.author && b.title === blog.title && b.url === blog.url
-
-module.exports = {
-	initialBlogs,
-	blogsInDb,
-	equalTo,
-	usersInDb
-}
+module.exports = { initialBlogs, nonExistingId, blogsInDb, usersInDb }
