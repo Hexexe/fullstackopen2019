@@ -10,7 +10,6 @@
     "test": "cross-env NODE_ENV=test jest --verbose --runInBand",
     "test1": "npm t -- tests/list_helper.test.js",
     "test2": "npm t -- tests/blog_api.test.js"
-
   },
   "keywords": [],
   "author": "Miro Laamanen",
