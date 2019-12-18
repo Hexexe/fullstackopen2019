@@ -4,7 +4,6 @@ const User = ({ user }) => {
 	if (!user) {
 		return null
 	}
-	console.log(user)
 	return (
 		<div>
 			<br />
