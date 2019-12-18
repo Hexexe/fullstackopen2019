@@ -1,4 +1,5 @@
 import React from 'react'
+// eslint-disable-next-line no-unused-vars
 import { BrowserRouter as Router, Route, Link, Redirect, withRouter } from 'react-router-dom'
 
 const Menu = ({ user, logout }) => {

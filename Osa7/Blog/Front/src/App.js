@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { BrowserRouter as Router, Route, Link, Redirect, withRouter } from 'react-router-dom'
-import { Table, Form, Button } from 'react-bootstrap'
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
+import { Table } from 'react-bootstrap'
 import Blog from './components/Blog'
 import Menu from './components/Menu'
 import blogService from './services/blogs'
@@ -16,9 +16,7 @@ const Login = ({ notification, handleLogin, username, password }) => {
 	return (
 		<div>
 			<h2>log in to application</h2>
-
 			<Notification notification={notification} />
-
 			<form onSubmit={handleLogin}>
 				<div>
 					username
@@ -34,7 +32,7 @@ const Login = ({ notification, handleLogin, username, password }) => {
 	)
 }
 
-const App = props => {
+const App = () => {
 	const [username] = useField('text')
 	const [password] = useField('password')
 	const [blogs, setBlogs] = useState([])
@@ -162,12 +160,7 @@ const App = props => {
 	const byLikes = (b1, b2) => b2.likes - b1.likes
 
 	return user === null ? (
-		<Login
-			notification={notification}
-			handleLogin={handleLogin}
-			username={username}
-			password={password}
-		/>
+		<Login notification={notification} handleLogin={handleLogin} username={username} password={password} />
 	) : (
 		<div className='container'>
 			<Router>
@@ -178,22 +171,10 @@ const App = props => {
 				<Route
 					exact
 					path='/blogs/:id'
-					render={({ match }) => (
-						<Blog
-							blog={blogById(match.params.id)}
-							like={likeBlog}
-							remove={removeBlog}
-							user={user}
-							creator={user.username}
-						/>
-					)}
+					render={({ match }) => <Blog blog={blogById(match.params.id)} like={likeBlog} remove={removeBlog} user={user} creator={user.username} />}
 				/>
 				<Route exact path='/users' render={() => renderUsers(users)} />
-				<Route
-					exact
-					path='/users/:id'
-					render={({ match }) => <User user={userById(match.params.id)} />}
-				/>
+				<Route exact path='/users/:id' render={({ match }) => <User user={userById(match.params.id)} />} />
 			</Router>
 		</div>
 	)

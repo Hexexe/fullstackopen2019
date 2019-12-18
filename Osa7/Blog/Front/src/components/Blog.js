@@ -1,5 +1,5 @@
 import React from 'react'
-//import PropTypes from 'prop-types'
+import PropTypes from 'prop-types'
 
 const Blog = ({ blog, like, remove, creator }) => {
 	if (!blog) {
@@ -20,11 +20,11 @@ const Blog = ({ blog, like, remove, creator }) => {
 	)
 }
 
-/* Blog.propTypes = {
+Blog.propTypes = {
 	blog: PropTypes.object.isRequired,
 	like: PropTypes.func.isRequired,
 	remove: PropTypes.func.isRequired,
 	creator: PropTypes.bool.isRequired
-} */
+}
 
 export default Blog
