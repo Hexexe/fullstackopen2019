@@ -12,26 +12,6 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import { useField } from './hooks'
 
-const Login = ({ notification, handleLogin, username, password }) => {
-	return (
-		<div>
-			<h2>log in to application</h2>
-			<Notification notification={notification} />
-			<form onSubmit={handleLogin}>
-				<div>
-					username
-					<input {...username} />
-				</div>
-				<div>
-					password
-					<input {...password} type='password' />
-				</div>
-				<button type='submit'>Login</button>
-			</form>
-		</div>
-	)
-}
-
 const App = () => {
 	const [username] = useField('text')
 	const [password] = useField('password')
@@ -62,7 +42,7 @@ const App = () => {
 
 	const notify = (message, type = 'success') => {
 		setNotification({ message, type })
-		setTimeout(() => setNotification({ message: null }), 10000)
+		setTimeout(() => setNotification({ message: null }), 5000)
 	}
 
 	const handleLogin = async event => {
@@ -72,7 +52,6 @@ const App = () => {
 				username: username.value,
 				password: password.value
 			})
-
 			window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
 			blogService.setToken(user.token)
 			setUser(user)
@@ -160,7 +139,21 @@ const App = () => {
 	const byLikes = (b1, b2) => b2.likes - b1.likes
 
 	return user === null ? (
-		<Login notification={notification} handleLogin={handleLogin} username={username} password={password} />
+		<div>
+			<h2>log in to application</h2>
+			<Notification notification={notification} />
+			<form onSubmit={handleLogin}>
+				<div>
+					username:
+					<input {...username} />
+				</div>
+				<div>
+					password:
+					<input {...password} type='password' />
+				</div>
+				<button type='submit'>Login</button>
+			</form>
+		</div>
 	) : (
 		<div className='container'>
 			<Router>
