@@ -34,7 +34,7 @@ const Login = ({ notification, handleLogin, username, password }) => {
 	)
 }
 
-const App = () => {
+const App = props => {
 	const [username] = useField('text')
 	const [password] = useField('password')
 	const [blogs, setBlogs] = useState([])
@@ -122,16 +122,7 @@ const App = () => {
 						{blogs.sort(byLikes).map(blog => (
 							<tr key={blog.id}>
 								<td>
-									<Link to={`/blogs/${blog.id}`}>
-										<Blog
-											key={blog.id}
-											blog={blog}
-											like={likeBlog}
-											remove={removeBlog}
-											user={user}
-											creator={blog.user.username === user.username}
-										/>
-									</Link>
+									<Link to={`/blogs/${blog.id}`}>{`${blog.title} by ${blog.author}`}</Link>
 								</td>
 							</tr>
 						))}
@@ -142,21 +133,26 @@ const App = () => {
 	}
 	const renderUsers = users => {
 		return (
-			<Table striped>
-				<tbody>
-					<tr>
-						<td>Name:</td>
-					</tr>
-					{users.map(user => (
-						<tr key={user.id}>
-							<td>
-								<Link to={`/users/${user.id}`}>{user.name}</Link>
-								{user.blogs.length}
-							</td>
+			<>
+				<br />
+				<h3>Users</h3>
+				<Table striped>
+					<tbody>
+						<tr>
+							<td>Name:</td>
+							<td>Blogs Created:</td>
 						</tr>
-					))}
-				</tbody>
-			</Table>
+						{users.map(user => (
+							<tr key={user.id}>
+								<td>
+									<Link to={`/users/${user.id}`}>{user.name}</Link>
+								</td>
+								<td>{user.blogs.length}</td>
+							</tr>
+						))}
+					</tbody>
+				</Table>
+			</>
 		)
 	}
 
@@ -182,7 +178,15 @@ const App = () => {
 				<Route
 					exact
 					path='/blogs/:id'
-					render={({ match }) => <Blog blog={blogById(match.params.id)} />}
+					render={({ match }) => (
+						<Blog
+							blog={blogById(match.params.id)}
+							like={likeBlog}
+							remove={removeBlog}
+							user={user}
+							creator={user.username}
+						/>
+					)}
 				/>
 				<Route exact path='/users' render={() => renderUsers(users)} />
 				<Route

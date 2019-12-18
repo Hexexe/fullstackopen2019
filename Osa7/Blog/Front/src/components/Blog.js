@@ -1,26 +1,21 @@
-import React, { useState } from 'react'
+import React from 'react'
 //import PropTypes from 'prop-types'
 
 const Blog = ({ blog, like, remove, creator }) => {
-	const [expanded, setExpanded] = useState(false)
-	const details = () => (
-		<div className='details'>
-			<a href={blog.url}>{blog.url}</a>
-			<div>
-				{blog.likes} likes
-				<button onClick={() => like(blog)}>like</button>
-			</div>
-			<div>added by {blog.user.name}</div>
-			{creator && <button onClick={() => remove(blog)}>remove </button>}
-		</div>
-	)
-
+	if (!blog) {
+		return null
+	}
+	const current = creator === blog.user.username
 	return (
 		<div>
-			<div onClick={() => setExpanded(!expanded)} className='name'>
-				{blog.title} {blog.author}
-			</div>
-			{expanded && details()}
+			<br />
+			<h2>{`${blog.title} by ${blog.author}`}</h2>
+			<a href={blog.url}>{blog.url}</a>
+			<p>
+				{blog.likes} likes<button onClick={() => like(blog)}>like</button>
+			</p>
+			<div>added by {blog.user.name}</div>
+			{current && <button onClick={() => remove(blog)}>remove </button>}
 		</div>
 	)
 }
