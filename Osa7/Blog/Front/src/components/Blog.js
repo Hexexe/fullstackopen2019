@@ -24,7 +24,7 @@ Blog.propTypes = {
 	blog: PropTypes.object.isRequired,
 	like: PropTypes.func.isRequired,
 	remove: PropTypes.func.isRequired,
-	creator: PropTypes.bool.isRequired
+	creator: PropTypes.string.isRequired
 }
 
 export default Blog
