@@ -1,13 +1,84 @@
-let _ = require('lodash')
-
 const dummy = blogs => 1
 
-const totalLikes = blogs => blogs.reduce((sum, item) => sum + item.likes, 0)
+const byLikes = (a, b) => b.likes - a.likes
+const byValue = (a, b) => b.value - a.value
 
-const favoriteBlog = blogs => blogs.length < 1 ? undefined : blogs.reduce((a, b) => a.likes > b.likes ? a : b)
+const authorWithGreatest = counts => {
+	const authorValues = Object.keys(counts).map(author => ({
+		author,
+		value: counts[author]
+	}))
 
-const mostBlogs = blogs => _.chain(blogs).groupBy('author').map((b, c) => ({ 'author': c, 'blogs': b.length })).sortBy('blogs').reverse().head().value()
+	return authorValues.sort(byValue)[0]
+}
 
-const mostLikes = blogs => _.chain(blogs).groupBy('author').map((b, c) => ({ 'author': c, 'likes': _.sumBy(b, 'likes') })).sortBy('likes').reverse().head().value()
+const totalLikes = blogs => {
+	if (blogs.length === 0) {
+		return 0
+	}
 
-module.exports = { dummy, totalLikes, favoriteBlog, mostBlogs, mostLikes }
+	return blogs.reduce((s, b) => s + b.likes, 0)
+}
+
+const favoriteBlog = blogs => {
+	if (blogs.length === 0) {
+		return null
+	}
+
+	const { title, author, likes } = blogs.sort(byLikes)[0]
+
+	return { title, author, likes }
+}
+
+const mostBlogs = blogs => {
+	if (blogs.length === 0) {
+		return null
+	}
+
+	const blogCount = blogs.reduce((obj, blog) => {
+		if (obj[blog.author] === undefined) {
+			obj[blog.author] = 0
+		}
+
+		obj[blog.author] += 1
+
+		return obj
+	}, {})
+
+	const { author, value } = authorWithGreatest(blogCount)
+
+	return {
+		author,
+		blogs: value
+	}
+}
+
+const mostLikes = blogs => {
+	if (blogs.length === 0) {
+		return null
+	}
+
+	const likeCount = blogs.reduce((obj, blog) => {
+		if (obj[blog.author] === undefined) {
+			obj[blog.author] = 0
+		}
+		obj[blog.author] += blog.likes
+
+		return obj
+	}, {})
+
+	const { author, value } = authorWithGreatest(likeCount)
+
+	return {
+		author,
+		likes: value
+	}
+}
+
+module.exports = {
+	dummy,
+	totalLikes,
+	favoriteBlog,
+	mostBlogs,
+	mostLikes
+}
