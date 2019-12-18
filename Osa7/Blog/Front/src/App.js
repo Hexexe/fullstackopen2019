@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Route, Link, Redirect, withRouter } from 'react-router-dom'
-import { Table } from 'react-bootstrap'
+import { Table, Form, Button } from 'react-bootstrap'
 import Blog from './components/Blog'
 import Menu from './components/Menu'
 import blogService from './services/blogs'
@@ -21,14 +21,14 @@ const Login = ({ notification, handleLogin, username, password }) => {
 
 			<form onSubmit={handleLogin}>
 				<div>
-					käyttäjätunnus
+					username
 					<input {...username} />
 				</div>
 				<div>
-					salasana
-					<input {...password} />
+					password
+					<input {...password} type='password' />
 				</div>
-				<button type='submit'>kirjaudu</button>
+				<button type='submit'>Login</button>
 			</form>
 		</div>
 	)
