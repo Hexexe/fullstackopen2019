@@ -1,16 +1,44 @@
 import React, { useState, useEffect } from 'react'
+import { BrowserRouter as Router, Route, Link, Redirect, withRouter } from 'react-router-dom'
+import { Table } from 'react-bootstrap'
 import Blog from './components/Blog'
+import Menu from './components/Menu'
 import blogService from './services/blogs'
+import userService from './services/users'
+import User from './components/User'
 import loginService from './services/login'
 import NewBlog from './components/NewBlog.js'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import { useField } from './hooks'
 
+const Login = ({ notification, handleLogin, username, password }) => {
+	return (
+		<div>
+			<h2>log in to application</h2>
+
+			<Notification notification={notification} />
+
+			<form onSubmit={handleLogin}>
+				<div>
+					käyttäjätunnus
+					<input {...username} />
+				</div>
+				<div>
+					salasana
+					<input {...password} />
+				</div>
+				<button type='submit'>kirjaudu</button>
+			</form>
+		</div>
+	)
+}
+
 const App = () => {
 	const [username] = useField('text')
 	const [password] = useField('password')
 	const [blogs, setBlogs] = useState([])
+	const [users, setUsers] = useState([])
 	const [user, setUser] = useState(null)
 	const [notification, setNotification] = useState({
 		message: null
@@ -19,6 +47,9 @@ const App = () => {
 	useEffect(() => {
 		blogService.getAll().then(blogs => {
 			setBlogs(blogs)
+		})
+		userService.getAll().then(users => {
+			setUsers(users)
 		})
 	}, [])
 
@@ -80,56 +111,86 @@ const App = () => {
 			notify(`blog ${updatedBlog.title} by ${updatedBlog.author} removed!`)
 		}
 	}
-
-	if (user === null) {
+	const renderBlogs = blogs => {
 		return (
 			<div>
-				<h2>log in to application</h2>
-
-				<Notification notification={notification} />
-
-				<form onSubmit={handleLogin}>
-					<div>
-						käyttäjätunnus
-						<input {...username} />
-					</div>
-					<div>
-						salasana
-						<input {...password} />
-					</div>
-					<button type='submit'>kirjaudu</button>
-				</form>
+				<Togglable buttonLabel='create new' ref={newBlogRef}>
+					<NewBlog createBlog={createBlog} />
+				</Togglable>
+				<Table striped>
+					<tbody>
+						{blogs.sort(byLikes).map(blog => (
+							<tr key={blog.id}>
+								<td>
+									<Link to={`/blogs/${blog.id}`}>
+										<Blog
+											key={blog.id}
+											blog={blog}
+											like={likeBlog}
+											remove={removeBlog}
+											user={user}
+											creator={blog.user.username === user.username}
+										/>
+									</Link>
+								</td>
+							</tr>
+						))}
+					</tbody>
+				</Table>
 			</div>
+		)
+	}
+	const renderUsers = users => {
+		return (
+			<Table striped>
+				<tbody>
+					<tr>
+						<td>Name:</td>
+					</tr>
+					{users.map(user => (
+						<tr key={user.id}>
+							<td>
+								<Link to={`/users/${user.id}`}>{user.name}</Link>
+								{user.blogs.length}
+							</td>
+						</tr>
+					))}
+				</tbody>
+			</Table>
 		)
 	}
 
 	const newBlogRef = React.createRef()
-
+	const blogById = id => blogs.find(a => a.id === id)
+	const userById = id => users.find(a => a.id === id)
 	const byLikes = (b1, b2) => b2.likes - b1.likes
 
-	return (
-		<div>
-			<h2>blogs</h2>
-
-			<Notification notification={notification} />
-
-			<p>{user.name} logged in</p>
-			<button onClick={handleLogout}>logout</button>
-
-			<Togglable buttonLabel='create new' ref={newBlogRef}>
-				<NewBlog createBlog={createBlog} />
-			</Togglable>
-
-			{blogs.sort(byLikes).map(blog => (
-				<Blog
-					key={blog.id}
-					blog={blog}
-					like={likeBlog}
-					remove={removeBlog}
-					user={user}
-					creator={blog.user.username === user.username}
+	return user === null ? (
+		<Login
+			notification={notification}
+			handleLogin={handleLogin}
+			username={username}
+			password={password}
+		/>
+	) : (
+		<div className='container'>
+			<Router>
+				<Menu user={user} logout={handleLogout} />
+				<h2>Blog app</h2>
+				<Notification notification={notification} />
+				<Route exact path='/' render={() => renderBlogs(blogs)} />
+				<Route
+					exact
+					path='/blogs/:id'
+					render={({ match }) => <Blog blog={blogById(match.params.id)} />}
 				/>
-			))}
+				<Route exact path='/users' render={() => renderUsers(users)} />
+				<Route
+					exact
+					path='/users/:id'
+					render={({ match }) => <User user={userById(match.params.id)} />}
+				/>
+			</Router>
 		</div>
 	)
 }
